@@ -1,0 +1,792 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "# 使用Gensim\n",
+    "\n",
+    "<br>\n",
+    "\n",
+    "\n",
+    "　gemsim是一个主题模型Python工具库，能够从文档中有效地自动抽取语义主题。gensim中的算法包括：LSA(Latent Semantic Analysis), LDA(Latent Dirichlet Allocation), RP (Random Projections),word2vec 通过在一个训练文档语料库中，检查词汇统计联合出现模式, 可以用来发掘文档语义结构，这些算法属于非监督学习，可以处理原始的，非结构化的文本(plain text)。\n",
+    "\n",
+    "在此，使用LDA和word2vec进行实践。\n",
+    "\n",
+    "\n",
+    "\n",
+    "![gensim](img/news007_00.jpg)\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "## 下载数据/预处理\n",
+    "\n",
+    "\n",
+    "\n",
+    "### 文本分类标准测试集reuters-21578\n",
+    "\n",
+    "\n",
+    ".. _`Reuters-21578`: http://www.daviddlewis.com/resources/testcollections/reuters21578/\n",
+    "\n",
+    "\n",
+    "\n",
+    "　`Reuters-21578`_ 是一个开放数据集，用于文本分类研究的测试集合。是路透社过去有关金融新闻的文章集。\n",
+    "\n",
+    "\n",
+    "### 什么是NLTK？\n",
+    "\n",
+    "\n",
+    "　NLTK（Python自然语言工具包）用于诸如标记化、词形还原、词干化、解析、POS标注等任务。该库具有几乎所有NLP任务的工具。\n",
+    "\n",
+    "\n",
+    "### 利用NLTK下载\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "[nltk_data] Downloading package reuters to /root/nltk_data...\n",
+      "[nltk_data]   Package reuters is already up-to-date!\n",
+      "[nltk_data] Downloading package stopwords to /root/nltk_data...\n",
+      "[nltk_data]   Package stopwords is already up-to-date!\n",
+      "[nltk_data] Downloading package punkt to /root/nltk_data...\n",
+      "[nltk_data]   Package punkt is already up-to-date!\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "%matplotlib inline\n",
+    "import gensim\n",
+    "import nltk\n",
+    "nltk.download(\"reuters\")\n",
+    "nltk.download(\"stopwords\")\n",
+    "nltk.download(\"punkt\")\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "　有连续三个nltk.download，nltk.download(reuters)是Reuters-21578数据。另外两个nltk.downloads下载数据供以后使用。将下载的文件保存在适当的本地目录中。\n",
+    "\n",
+    "\n",
+    "\n",
+    "### 读取数据并存于变量中\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reuters = nltk.corpus.reuters\n",
+    "paras = reuters.paras()\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　从文件中读取Reuters-21578数据，存于reuters中。\n",
+    "\n",
+    "　reuters中有各种信息的对象，新闻记事的文本信息通过paras方法获取。\n",
+    "paras[i]中的第i条指向一个句子，每条是一个句子的列表，每句是单词列表。\n",
+    "\n",
+    "　看一下第一篇文章中第一句话的20个单词。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['ASIAN',\n",
+       " 'EXPORTERS',\n",
+       " 'FEAR',\n",
+       " 'DAMAGE',\n",
+       " 'FROM',\n",
+       " 'U',\n",
+       " '.',\n",
+       " 'S',\n",
+       " '.-',\n",
+       " 'JAPAN',\n",
+       " 'RIFT',\n",
+       " 'Mounting',\n",
+       " 'trade',\n",
+       " 'friction',\n",
+       " 'between',\n",
+       " 'the',\n",
+       " 'U',\n",
+       " '.',\n",
+       " 'S',\n",
+       " '.']"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "paras[0][0][:20]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　在Gensim中使用「bag of words」“词袋”形式的文档。所谓的单词袋形式是一种忽略单词的排列方式的数据格式，只保留有关文档中每个单词出现次数的信息。\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "### 去除停用词\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "　有一点需要注意。通常在自然语言处理中，去除停用词是预处理工作。停用词是指，经常使用但实际上不影响句子解释的词。如在英语中的冠词和介词等。这些是是人们阅读英语句子时的重要信息，但在不考虑单词顺序单词袋中，就变成了无用的信息。\n",
+    "\n",
+    "　看一下NLTK中的英语停用词。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "stop_words = set(nltk.corpus.stopwords.words(\"english\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "下面是英文字母顺序的前十个停用词。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an']"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "sorted(stop_words)[:10]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "### 将数据转换为“词序列”\n",
+    "\n",
+    "\n",
+    "\n",
+    " 把文档数据转换为“字符串双重列表”。换句话说，就是把每篇文章原有“段落”结构，转换为单纯的“单词序列”。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import itertools\n",
+    "reuters_texts = [itertools.chain(*p) for p in paras]\n",
+    "reuters_texts_filtered = [[w.lower() for w in p if w not in stop_words and len(w) >= 2] for p in reuters_texts]\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　reuters_texts变量存放结果，而去除了停用词和单一字母单词的结果存于reuters_texts_filtered中，\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 转换为Corpus(语料库)格式\n",
+    "\n",
+    "\n",
+    "\n",
+    "　转换为Gensim中使用的“语料库”格式。语料库是自然语言处理中经常使用的术语，通常定义为易于进行文章的构造化结构。Gensim中是语料库的单袋格式。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dictionary = gensim.corpora.Dictionary(itertools.chain(reuters_texts_filtered))\n",
+    "reuters_corpus = [dictionary.doc2bow(text) for text in reuters_texts_filtered]\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　gensim.corpora.Dictionary是对每个单词的数值定义的类型。该类型能够进行单词和数字的双向转换。第二行是利用它制作一套单词格式的语料库。显示reuters_corpus中第一个文档的10个单词。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[(0, 1),\n",
+       " (1, 6),\n",
+       " (2, 1),\n",
+       " (3, 1),\n",
+       " (4, 2),\n",
+       " (5, 1),\n",
+       " (6, 1),\n",
+       " (7, 1),\n",
+       " (8, 1),\n",
+       " (9, 1)]"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "reuters_corpus[0][:10]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "\n",
+    "（0，1），（1，6）表示指第0个单词出现1次，第1个单词出现6次。\n",
+    "\n",
+    "到此为止是预处理部分，下面使用机器学习进行分析。"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "\n",
+    "## 使用LDA计算主题模型\n",
+    "\n",
+    "\n",
+    "\n",
+    "### 什么是LDA\n",
+    "\n",
+    "\n",
+    "　LDA是“主题模型”的手法之一。主题模型是指推测文档主题的模型，用于文档分类和搜索。 LDA通过“概率分布”预测每个文档的主题。\n",
+    "\n",
+    "　如，假设新闻网站包含三个主题的要素：“政治”，“经济”和“体育”。LDA分析得到的是三项要素的加权值。如果将其标准化总和为 1，则可以将LDA视为这三个主题的概率分布。\n",
+    "\n",
+    "　下图显示的是计算结果。\n",
+    "\n",
+    "\n",
+    "![ss](img/news007_1.jpg)\n",
+    "\n",
+    "\n",
+    "在LDA中，从指定主题的数量。然后得到“有哪些主题”，并计算每个文档的主题分布。\n",
+    "\n",
+    "\n",
+    "### LDA训练\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dictionary[0]\n",
+    "model=gensim.models.ldamodel.LdaModel(reuters_corpus, num_topics=20,id2word=dictionary.id2token, random_state=0)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　dictionary[0]是函数dictionary.id2token所需的手续。在第二行中，建立模型并训练。参数num_topics是主题数，参数id2word是数字/单词的转换函数。之后的可视化中需要。 Random_state是随机数种子，用于多次执行提高结果的再现度。\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[(0,\n",
+       "  '0.052*\"bank\" + 0.037*\"mln\" + 0.034*\"stg\" + 0.023*\"said\" + 0.018*\"the\" + 0.015*\"market\" + 0.013*\"pct\" + 0.011*\"money\" + 0.011*\"billion\" + 0.011*\"dlrs\"'),\n",
+       " (1,\n",
+       "  '0.032*\"pct\" + 0.025*\"said\" + 0.024*\"billion\" + 0.016*\"the\" + 0.013*\"year\" + 0.010*\"bank\" + 0.007*\"government\" + 0.007*\"trade\" + 0.007*\"foreign\" + 0.007*\"last\"'),\n",
+       " (2,\n",
+       "  '0.028*\"lt\" + 0.023*\"said\" + 0.017*\"inc\" + 0.017*\"corp\" + 0.015*\"dlrs\" + 0.015*\"mln\" + 0.012*\"unit\" + 0.012*\"co\" + 0.009*\"company\" + 0.008*\"division\"'),\n",
+       " (3,\n",
+       "  '0.044*\"said\" + 0.028*\"company\" + 0.020*\"dlrs\" + 0.013*\"lt\" + 0.012*\"share\" + 0.011*\"the\" + 0.010*\"inc\" + 0.008*\"offer\" + 0.008*\"would\" + 0.007*\"mln\"'),\n",
+       " (4,\n",
+       "  '0.046*\"january\" + 0.044*\"billion\" + 0.041*\"february\" + 0.032*\"dlrs\" + 0.031*\"pct\" + 0.027*\"mln\" + 0.023*\"year\" + 0.021*\"rose\" + 0.017*\"1986\" + 0.016*\"december\"'),\n",
+       " (5,\n",
+       "  '0.024*\"said\" + 0.017*\"dlrs\" + 0.014*\"the\" + 0.014*\"year\" + 0.011*\"mln\" + 0.008*\"pct\" + 0.008*\"bank\" + 0.007*\"banks\" + 0.006*\"company\" + 0.006*\"week\"'),\n",
+       " (6,\n",
+       "  '0.063*\"cts\" + 0.035*\"april\" + 0.033*\"record\" + 0.032*\"lt\" + 0.027*\"div\" + 0.024*\"vs\" + 0.024*\"qtly\" + 0.023*\"pay\" + 0.023*\"prior\" + 0.021*\"march\"'),\n",
+       " (7,\n",
+       "  '0.027*\"said\" + 0.024*\"dollar\" + 0.012*\"yen\" + 0.011*\"rates\" + 0.011*\"exchange\" + 0.011*\"currency\" + 0.011*\"paris\" + 0.010*\"the\" + 0.009*\"baker\" + 0.009*\",\"\"'),\n",
+       " (8,\n",
+       "  '0.052*\"pct\" + 0.033*\"shares\" + 0.033*\"said\" + 0.017*\"stake\" + 0.017*\"lt\" + 0.016*\"offer\" + 0.016*\"group\" + 0.010*\"the\" + 0.010*\"common\" + 0.009*\"stock\"'),\n",
+       " (9,\n",
+       "  '0.037*\"said\" + 0.016*\"oil\" + 0.014*\"the\" + 0.010*\",\"\" + 0.009*\"prices\" + 0.008*\"pct\" + 0.007*\"would\" + 0.007*\"year\" + 0.006*\"price\" + 0.005*\"market\"'),\n",
+       " (10,\n",
+       "  '0.031*\"mln\" + 0.027*\"said\" + 0.024*\"tonnes\" + 0.022*\"000\" + 0.015*\"the\" + 0.013*\"year\" + 0.011*\"1986\" + 0.009*\"wheat\" + 0.009*\"dlrs\" + 0.007*\"production\"'),\n",
+       " (11,\n",
+       "  '0.031*\"said\" + 0.017*\"lt\" + 0.010*\"the\" + 0.010*\"stock\" + 0.009*\"delegates\" + 0.008*\"buffer\" + 0.008*\"cocoa\" + 0.007*\"gulf\" + 0.006*\"ltd\" + 0.005*\"would\"'),\n",
+       " (12,\n",
+       "  '0.032*\"said\" + 0.010*\"coffee\" + 0.009*\"the\" + 0.008*\"would\" + 0.007*\"year\" + 0.006*\"trade\" + 0.006*\",\"\" + 0.006*\"brazil\" + 0.006*\"china\" + 0.006*\"export\"'),\n",
+       " (13,\n",
+       "  '0.029*\"said\" + 0.021*\"trade\" + 0.017*\"the\" + 0.016*\"would\" + 0.008*\"agreement\" + 0.007*\"japan\" + 0.007*\"ec\" + 0.007*\",\"\" + 0.006*\"bill\" + 0.006*\".\"\"'),\n",
+       " (14,\n",
+       "  '0.030*\"dlrs\" + 0.029*\"said\" + 0.020*\"lt\" + 0.015*\"pct\" + 0.011*\"the\" + 0.011*\"corp\" + 0.009*\"cyclops\" + 0.009*\"usair\" + 0.008*\"federal\" + 0.008*\"company\"'),\n",
+       " (15,\n",
+       "  '0.034*\"said\" + 0.032*\"lt\" + 0.026*\"mln\" + 0.018*\"stock\" + 0.017*\"dlrs\" + 0.015*\"company\" + 0.015*\"inc\" + 0.013*\"the\" + 0.010*\"shares\" + 0.010*\"corp\"'),\n",
+       " (16,\n",
+       "  '0.019*\"said\" + 0.011*\"canada\" + 0.009*\"trade\" + 0.009*\"the\" + 0.008*\"would\" + 0.008*\"canadian\" + 0.007*\"chrysler\" + 0.005*\"lawson\" + 0.005*\"government\" + 0.005*\",\"\"'),\n",
+       " (17,\n",
+       "  '0.014*\"),\" + 0.012*\"plant\" + 0.010*\"said\" + 0.009*\"to\" + 0.008*\"saudi\" + 0.008*\"aluminium\" + 0.007*\"bolivia\" + 0.007*\"the\" + 0.007*\"nil\" + 0.007*\"corn\"'),\n",
+       " (18,\n",
+       "  '0.088*\"vs\" + 0.070*\"mln\" + 0.048*\"000\" + 0.042*\"net\" + 0.041*\"cts\" + 0.035*\"loss\" + 0.029*\"dlrs\" + 0.026*\"shr\" + 0.020*\"profit\" + 0.016*\"qtr\"'),\n",
+       " (19,\n",
+       "  '0.020*\"said\" + 0.012*\"the\" + 0.009*\"port\" + 0.009*\"shipping\" + 0.008*\"iran\" + 0.008*\"gulf\" + 0.007*\"soviet\" + 0.007*\"ship\" + 0.007*\"unemployment\" + 0.006*\"ships\"')]"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model.print_topics()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　对于每个主题，以单词和权重的最高顺序排列。第0个主题中bank和million权重高，可以视为是银行相关的主题。第三个主题中公司，dlrs，股票的权重高，可以看作是有关公司股价的主题。\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 推测主题\n",
+    "\n",
+    "\n",
+    "\n",
+    "　使用和训练相同的数据，推测文档主题。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred, _ = model.inference(reuters_corpus)\n",
+    "pred /= pred.sum(axis=1).reshape(-1, 1)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　第一行是计算预测值。第二行对结果正规化。\n",
+    "\n",
+    "　用条形图可视化前5个文档的主题分布。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 1080x216 with 5 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "fig, axes = plt.subplots(1, 5, figsize=(15, 3))\n",
+    "for i in range(5):\n",
+    "    axes[i].set_ylim(0, 1)\n",
+    "    axes[i].bar(range(20), pred[i])\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　第一个是文档中信息最强烈的主题"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "13"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pred[0].argmax()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　从上面的主题构成词列表中查找第13个主题，会发现诸如“交易”和“协议”之类的权重很高。推测，与国际贸易协定有关。让我们看一下文档（仅显示前300个字符）。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "ASIAN EXPORTERS FEAR DAMAGE FROM U.S.-JAPAN RIFT\n",
+      "  Mounting trade friction between the\n",
+      "  U.S. And Japan has raised fears among many of Asia's exporting\n",
+      "  nations that the row could inflict far-reaching economic\n",
+      "  damage, businessmen and officials said.\n",
+      "      They told Reuter correspondents in Asian \n"
+     ]
+    }
+   ],
+   "source": [
+    "fileids = reuters.fileids()\n",
+    "print(reuters.raw(fileids[0])[:300])\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　这是关于日美贸易摩擦的新闻。事实证明，LDA判决是合理的。\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Word2vec词嵌入\n",
+    "\n",
+    "\n",
+    "\n",
+    "### 下载Quora数据集\n",
+    "\n",
+    "\n",
+    "\n",
+    "　下载数据\"quora_duplicate_questions.tsv”, 将其放在目录\"data\"中。\n",
+    "以其中的\"question1\"为列。它收集了大约40万个英语问题。\n",
+    "读取数据，分解为单词，显示前10个句子的内容。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[['what', 'is', 'the', 'step', 'by', 'step', 'guide', 'to', 'invest', 'in', 'share', 'market', 'in', 'india', '?'], ['what', 'is', 'the', 'story', 'of', 'kohinoor', '(', 'koh-i-noor', ')', 'diamond', '?'], ['how', 'can', 'i', 'increase', 'the', 'speed', 'of', 'my', 'internet', 'connection', 'while', 'using', 'a', 'vpn', '?'], ['why', 'am', 'i', 'mentally', 'very', 'lonely', '?', 'how', 'can', 'i', 'solve', 'it', '?'], ['which', 'one', 'dissolve', 'in', 'water', 'quikly', 'sugar', ',', 'salt', ',', 'methane', 'and', 'carbon', 'di', 'oxide', '?'], ['astrology', ':', 'i', 'am', 'a', 'capricorn', 'sun', 'cap', 'moon', 'and', 'cap', 'rising', '...', 'what', 'does', 'that', 'say', 'about', 'me', '?'], ['should', 'i', 'buy', 'tiago', '?'], ['how', 'can', 'i', 'be', 'a', 'good', 'geologist', '?'], ['when', 'do', 'you', 'use', 'シ', 'instead', 'of', 'し', '?'], ['motorola', '(', 'company', ')', ':', 'can', 'i', 'hack', 'my', 'charter', 'motorolla', 'dcx3400', '?']]\n"
+     ]
+    }
+   ],
+   "source": [
+    "import csv\n",
+    "quora = []\n",
+    "with open(\"data/quora_duplicate_questions.tsv\", encoding='utf-8') as fp:\n",
+    "    reader = csv.reader(fp, delimiter=\"\\t\")\n",
+    "    next(reader)\n",
+    "    for row in reader:\n",
+    "        quora.append(nltk.tokenize.word_tokenize(row[3].lower()))\n",
+    "print(quora[:10])\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　去除停用词，显示前10个句子。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[['step', 'step', 'guide', 'invest', 'share', 'market', 'india'], ['story', 'kohinoor', 'koh-i-noor', 'diamond'], ['increase', 'speed', 'internet', 'connection', 'using', 'vpn'], ['mentally', 'lonely', 'solve'], ['one', 'dissolve', 'water', 'quikly', 'sugar', 'salt', 'methane', 'carbon', 'di', 'oxide'], ['astrology', 'capricorn', 'sun', 'cap', 'moon', 'cap', 'rising', '...', 'say'], ['buy', 'tiago'], ['good', 'geologist'], ['use', 'instead'], ['motorola', 'company', 'hack', 'charter', 'motorolla', 'dcx3400']]\n"
+     ]
+    }
+   ],
+   "source": [
+    "quora_filtered = []\n",
+    "for sentence in quora:\n",
+    "    quora_filtered.append([w for w in sentence if w not in stop_words and len(w) > 1])\n",
+    "print(quora_filtered[:10])\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 什么是Word2vec\n",
+    "\n",
+    "\n",
+    "\n",
+    "词嵌入(Word Embedding)：\n",
+    "\n",
+    "  就是将「不可计算」「非结构化」的词转化为「可计算」「结构化」的向量,这一步解决的是”将现实问题转化为数学问题“\n",
+    "Word2vec是词嵌入方式之一，属于NLP领域。将词转化为「可计算」「结构化」的向量的过程。\n",
+    "\n",
+    "　Word2vec是一种将词嵌入到指定维度空间中的算法，空间中单词之间距离的接近度就是单词含义的接近度。\n",
+    "\n",
+    "\n",
+    "### 使用Word2vec训练\n",
+    "\n",
+    "\n",
+    "\n",
+    "　与LDA不同，仅需要单词列表，而不需要语料库数据。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = gensim.models.Word2Vec(quora_filtered, size=50, window=5)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　此处指定的“size”是嵌入维度空间的尺寸，“窗口”是连接单词数。\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 使用Word2vec推测\n",
+    "\n",
+    "\n",
+    "　看一下训练后的模型中的与“生病”和“演员”两个词相近的词。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/root/anaconda3/envs/ml-dev/lib/python3.5/site-packages/gensim/matutils.py:737: FutureWarning: Conversion of the second argument of issubdtype from `int` to `np.signedinteger` is deprecated. In future, it will be treated as `np.int64 == np.dtype(int).type`.\n",
+      "  if np.issubdtype(vec.dtype, np.int):\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "[('angry', 0.8846410512924194),\n",
+       " ('hungry', 0.8809215426445007),\n",
+       " ('pierced', 0.8643348217010498),\n",
+       " ('uncomfortable', 0.8594077229499817),\n",
+       " ('dizzy', 0.8556342720985413),\n",
+       " ('drunk', 0.8525719046592712),\n",
+       " ('depressed', 0.8452755212783813),\n",
+       " ('jealous', 0.8409408330917358),\n",
+       " ('aroused', 0.8362992405891418),\n",
+       " ('horny', 0.8306034803390503)]"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model.wv.similar_by_word(\"sick\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "　单词从上到下按顺序排列。可以结果是合理的。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[('actress', 0.92546546459198),\n",
+       " ('singer', 0.8973912596702576),\n",
+       " ('bollywood', 0.8659350872039795),\n",
+       " ('actors', 0.8614586591720581),\n",
+       " ('superhero', 0.8529343008995056),\n",
+       " ('actor/actress', 0.8393876552581787),\n",
+       " ('comedy', 0.8310166597366333),\n",
+       " ('portrayed', 0.8223127126693726),\n",
+       " ('actresses', 0.8207921385765076),\n",
+       " ('hollywood', 0.81743323802948)]"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model.wv.similar_by_vector(\"actor\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## 总结\n",
+    "\n",
+    "\n",
+    "\n",
+    "　演示Gensim的典型用法，LDA和Word2vec。这些可以用来和主题模型的类似的领域比如文档检索。\n",
+    "　处理的是英文数据，在中文，日文中处理时，还需要构词分割等工具。比较知名的有MeCab、Juman、Sudachi等。\n",
+    "\n",
+    "\n",
+    "## 结束语\n",
+    "\n",
+    "\n",
+    "　广泛而浅显介绍了机器学习中使用各种工具库，在库的选择上，是基于作者本身的经验，可能有所偏颇。希望读者通过学习，对Python机器学习中各种工具库的使用有一个宏观明确的认识。\n",
+    "\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.5.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

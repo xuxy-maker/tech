@@ -1,0 +1,759 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>神经网络深度学习(TensorFlow/Keras) &#8212; ml-libs  文档</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/translations.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "processClass": "math|output_area", "ignoreClass": "document"}})</script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="使用Gensim" href="gensim.html" />
+    <link rel="prev" title="scikit-learn" href="scikit-learn.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>ml-libs  文档</span></a></h1>
+        <h2 class="heading"><span>神经网络深度学习(TensorFlow/Keras)</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="scikit-learn.html">scikit-learn</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="gensim.html">使用Gensim</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="神经网络深度学习(TensorFlow/Keras)">
+<h1>神经网络深度学习(TensorFlow/Keras)<a class="headerlink" href="#神经网络深度学习(TensorFlow/Keras)" title="永久链接至标题">¶</a></h1>
+<div class="section" id="神经网络基础">
+<h2>神经网络基础<a class="headerlink" href="#神经网络基础" title="永久链接至标题">¶</a></h2>
+<p>　在进入各种具体使用之前，理清一些相关的基本概念。</p>
+<div class="section" id="神经网络(Neural-Network)">
+<h3>神经网络(Neural Network)<a class="headerlink" href="#神经网络(Neural-Network)" title="永久链接至标题">¶</a></h3>
+<p>　神经网络（Neural Network，NN)在机器学习和认知科学领域，是一种模仿生物神经网络的结构和功能的数学模型，用于对函数进行估计或近似。神经网络由大量的人工神经元联结进行计算。大多数情况下人工神经网络能在外界信息的基础上改变内部结构，是一种自适应系统，通俗的讲就是具备学习功能。</p>
+<p>　神经网络可分为通过输入正确答案针对问题进行了优化的监督学习和不需要教师信号的无监督学习。本质上，两种学习是等价的。 已经证明，具有三层以上的神经网络可以近似可微的任意连续函数。在许多情况下，对于无法通过多维数据（例如图像和统计数据）线性分离的问题，可以通过相对少量的计算来获得良好的解。</p>
+</div>
+<div class="section" id="深度学习(Deep-learning)">
+<h3>深度学习(Deep learning)<a class="headerlink" href="#深度学习(Deep-learning)" title="永久链接至标题">¶</a></h3>
+<p>　深度学习的概念源于人工神经网络的研究，含多个隐藏层的多层感知器就是一种深度学习结构。深度学习通过组合低层特征形成更加抽象的高层表示属性类别或特征，以发现数据的分布式特征表示。研究深度学习的动机在于建立模拟人脑进行分析学习的神经网络，它模仿人脑的机制来解释数据，例如图像，声音和文本等。</p>
+</div>
+<div class="section" id="TensorFlow">
+<h3>TensorFlow<a class="headerlink" href="#TensorFlow" title="永久链接至标题">¶</a></h3>
+<p>　TensorFlow是开源数学计算引擎，由Google开发，API是Python的，底层是C++。可以在单个CPU或GPU，移动设备以及大规模分布式系统中使用。</p>
+</div>
+<div class="section" id="Keras">
+<h3>Keras<a class="headerlink" href="#Keras" title="永久链接至标题">¶</a></h3>
+<p>　Keras可以基于Theano或TensorFlow建立深度学习模型，方便研究和开发。Keras可以在Python 2.7或3.5运行，无痛调用后端的CPU或GPU网络。Keras由Google的Francois Chollet开发，遵循以下原则:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>模块化：每个模块都是单独的流程或图，深度学习的所有问题都可以通过组装模块解决
+简单化：提供解决问题的最简单办法，不加装饰，最大化可读性
+扩展性：新模块的添加特别容易，方便试验新想法
+Python：不使用任何自创格式，只使用原生Python
+</pre></div>
+</div>
+</div>
+<div class="section" id="从Iris数据集为例看神经网络和深度学习机制">
+<h3>从Iris数据集为例看神经网络和深度学习机制<a class="headerlink" href="#从Iris数据集为例看神经网络和深度学习机制" title="永久链接至标题">¶</a></h3>
+<p>　Iris数据中有4个特征量，将其他作为输入。神经网络算法如下图所述。</p>
+<p><img alt="shiki" src="_images/news012_convolution.jpg" /></p>
+<p>图中，圆圈称为节点，而连接节点的线称为边缘。</p>
+<p>　Iris数据的四个特征量，分别用x1，…，x4表示。这些节点称为输入层。下一层称为中间层，用v1，…，v4表示。 权重与每个边缘相关联，从xi到vj的权重为w(1)ij。v1的值，是x1到x4的权重和加偏置项b(1)1。此处的激活函数为h1。</p>
+<p>算式如下:</p>
+<p><img alt="image1" src="_images/news012_maxpool.jpg" /></p>
+<p>其中激活函数h(1)</p>
+<p>此处的激活函数h(1)通常称为ReLU(线性整流函数)。 ReLU如下定义。</p>
+<p><img alt="image2" src="_images/news012_shiki4.jpg" /></p>
+<p>中间层到输出层的计算类似地由加权线性和与激活函数的组合定义。</p>
+<p>当从节点vi到yj的权重为w(2)ij时，yj表示如下：</p>
+<p><img alt="image3" src="_images/news012_shiki2.jpg" /></p>
+<p>Yj是输出层，经常使用softmax函数作为激活函数。此时softmax函数如下定义：</p>
+<p><img alt="image4" src="_images/news012_shiki3.jpg" /></p>
+<p>　用v1，v2，v3的值来表示vj更直观，但考虑到其它各层，统一用是softmax(vj; v1，v2，v3)来描述。。 最终进行分类时，取y1，y2和y3的最大值作为标签。这种，在n各输出变量中求最大值索引值的手法，称为OneHotEncoder(热编码).在训练阶段，神经网络使用训练数据调整加权因子w和偏差项b的值，似的输出尽可能正确。此处不讨论用于调整参数算法的细节。</p>
+<p>　通过Iris数据集说明了神经网络的机制。在Iris数据中，输入层节点和输出层节点的所有组合都是相连的。通常，在考虑数据的属性时，要考虑各个节点的相互关系，节点连接意味着变量间存在依赖。权重与边缘增加，计算量也随之增加。当输入是图像数据时，输入节点数通常是像素数或者是3倍像素数(RGB)，输入层和中间层的节点如果全部相连，则边的数量将非常庞大。</p>
+<p>　中间节点数可以自由决定，通常通过实验确定合适数目。Iris数据，只有一个中间层，通常情况可能会有多个中间层。 此方式，有多个中间层的神经网络进行的学习称为深度学习。</p>
+<p>　综上所述，在开始训练学习之前，需确定网络的结构，包括中间层的数量，节点的数量，边缘连接等。</p>
+</div>
+<div class="section" id="实现Iris的数据分类">
+<h3>实现Iris的数据分类<a class="headerlink" href="#实现Iris的数据分类" title="永久链接至标题">¶</a></h3>
+<p>准备数据。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">model_selection</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">iris</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>　Iris数据随机排列，取20％用于测试，其余训练用。创建一个神经网络模型。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>　tf.keras.models.Sequential类表示按层序定义网络。</p>
+<p>　tf.keras.layers.Dense(4, activation=tf.nn.relu)对应于输入层连接中间层。 Dense类表示它与上层紧密耦合 (即，与上层的每个节点对都有一条边)。Dense的第一个参数表下一层中的节点数。activation是激活函数，这里使用ReLU。</p>
+<p>　tf.keras.layers.Dense(3, activation=tf.nn.softmax)是输出层的定义。与中间层紧密连接。激活函数是softmax，如上所述，在输出层中经常使用softmax，输出是OneHotEncoder。</p>
+<p>下图显示代码与网络图之间的关系。</p>
+<p><img alt="shiki" src="_images/news012_convolution.jpg" /></p>
+<p>定义网络后，指定损失函数和优化算法并进行编译。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;sparse_categorical_crossentropy&quot;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>　optimizer=adam，指定优化算法使用adam。这里不做说明，adam算法在多数情况下是一种有效的手法。 指定损失函数，loss=sparse_categorical_crossentropy。该例中，输出是OneHotEncoder，训练数据的标签是0到2的分类值。 metric=[accuracy]，指定在计算过程中显示的内容。accuracy是预测的准确性。</p>
+<p>训练　计算测试数据的预测值</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pred</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([2, 1, 0, 1, 0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 2, 1,
+       0, 0, 2, 0, 0, 1, 1, 0])
+</pre></div></div>
+</div>
+<p>正解率</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">y_test</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.9333333333333333
+</pre></div></div>
+</div>
+<p>注意，训练过程中使用的是随机数，因此结果可能会有所不同。</p>
+</div>
+</div>
+<div class="section" id="画像の分類">
+<h2>画像の分類<a class="headerlink" href="#画像の分類" title="永久链接至标题">¶</a></h2>
+<p>　目前为止，一直使用Iris数据，一是因为它只需要简单的网络结构，二是因为在深度学习之前的经典算法中足够准确。 深度学习使得图像识别取得了长足的突破，下面，使用一个复杂的，经典的图像分类的数据。</p>
+<div class="section" id="图像分类数据集cifar10">
+<h3>图像分类数据集cifar10<a class="headerlink" href="#图像分类数据集cifar10" title="永久链接至标题">¶</a></h3>
+<p>这是一个著名的图像分类数据集cifar10。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_label</span><span class="p">),</span> <span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">test_label</span><span class="p">)</span> \
+    <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">cifar10</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">train_data</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">test_data</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">train_label</span> <span class="o">=</span> <span class="n">train_label</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">test_label</span> <span class="o">=</span> <span class="n">test_label</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">train_data</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(50000, 32, 32, 3)
+</pre></div></div>
+</div>
+<p>　下载cifar10数据，将训练数据存储在train_data、train_label中，测试数据存储在test_data、test_label)中。 train_data和test_data是特征量数据，即图像数据。原始数据是从0到255的像素RGB值，将其缩放到0到1之间。</p>
+<p>　标签数据以二维数组的形式，用ravel转换为一维数组，方便后续处理。通过train_data.shape可以看到，train_data是一个4维数组，第一维表示图像数量，下两个维度对应于像素的坐标，最后一个维度是RGB。</p>
+<p>　标签值是0到9之间的整数值，每个数字相对应的对象如下:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">label_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;airplane&quot;</span><span class="p">,</span> <span class="s2">&quot;automobile&quot;</span><span class="p">,</span> <span class="s2">&quot;bird&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;deer&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;frog&quot;</span><span class="p">,</span> <span class="s2">&quot;horse&quot;</span><span class="p">,</span> <span class="s2">&quot;ship&quot;</span><span class="p">,</span> <span class="s2">&quot;truck&quot;</span><span class="p">]</span>
+
+
+</pre></div>
+</div>
+</div>
+<p>在深度学习之前，看一下数据的内容，这是训练数据中每个标签10幅图像。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">imgs</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="n">train_label</span> <span class="o">==</span> <span class="n">i</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">imgs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tensorflow-keras_16_0.png" src="_images/tensorflow-keras_16_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="卷积层和最大池层">
+<h3>卷积层和最大池层<a class="headerlink" href="#卷积层和最大池层" title="永久链接至标题">¶</a></h3>
+<p>　定义一个学习此网络。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                           <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">MaxPool2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">MaxPool2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">)</span>
+<span class="p">])</span>
+
+</pre></div>
+</div>
+</div>
+<p>　在Iris中，使用Dense的类来连接上下层，但在cifar10中，每个图像数有32×32×3个数值，这样结合，计算成本过高。在此，采用卷积层和最大池层组合。这是图像识别中经常使用的技术。</p>
+<p>　卷积层使用一种把固定大小的矩形(通常是正方形)中的点的权重总和分配给节点的机制。这种加权形式称为filter。filter从图像的左上方开始依次顺移覆盖整个图像，计算加权和。通常使用多个filter，分别计算其加权和。代码中，第一个参数Conv2D的参数，16表示过滤器的数量，第二个参数(3,3)是过滤器的尺寸。</p>
+<p><img alt="shiki" src="_images/news012_convolution.jpg" /></p>
+<p>卷积层 　在poolMaxpool层分割与输入相同大小的像元，并将每个像元中点的最大值分配给节点。代码中指定为MaxPool2D的参数(2,2)表示单元格的大小。</p>
+<p><img alt="image1" src="_images/news012_maxpool.jpg" /></p>
+<p>最大池层 　操作卷积(Conv2D)和Maxpool(MaxPool2D)的操作执行了两次。在Flatten层，把二维数组转换为一维。Flatten层不执行数值计算，连接最后两层，输出层使用softmax函数进行一次OneHotEncoder热编码。</p>
+</div>
+<div class="section" id="确认定义的网络结构">
+<h3>确认定义的网络结构<a class="headerlink" href="#确认定义的网络结构" title="永久链接至标题">¶</a></h3>
+<p>　使用summary确认定义的网络结构</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d (Conv2D)              (None, 30, 30, 16)        448
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 15, 15, 16)        0
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 13, 13, 32)        4640
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 6, 6, 32)          0
+_________________________________________________________________
+flatten (Flatten)            (None, 1152)              0
+_________________________________________________________________
+dense_2 (Dense)              (None, 512)               590336
+_________________________________________________________________
+dense_3 (Dense)              (None, 10)                5130
+=================================================================
+Total params: 600,554
+Trainable params: 600,554
+Non-trainable params: 0
+_________________________________________________________________
+</pre></div></div>
+</div>
+<p>各层输出的大小和参数数量。指定优化算法和损失函数，与Iris数据集相同。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">])</span>
+
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="训练">
+<h3>训练<a class="headerlink" href="#训练" title="永久链接至标题">¶</a></h3>
+<p>　此过程需要几分钟时间。（过于耗时，epochs设为5次演示）</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span><span class="n">train_label</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 1/5
+50000/50000 [==============================] - 62s 1ms/step - loss: 1.3874 - acc: 0.5075
+Epoch 2/5
+50000/50000 [==============================] - 62s 1ms/step - loss: 1.1115 - acc: 0.6117
+Epoch 3/5
+50000/50000 [==============================] - 75s 2ms/step - loss: 1.0293 - acc: 0.6412
+Epoch 4/5
+50000/50000 [==============================] - 70s 1ms/step - loss: 0.9700 - acc: 0.6624
+Epoch 5/5
+50000/50000 [==============================] - 69s 1ms/step - loss: 0.9349 - acc: 0.6747
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;tensorflow.python.keras.callbacks.History at 0x7fcf90d8e240&gt;
+</pre></div></div>
+</div>
+<p>用HDF5格式，保存训练结果。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;cifar10.h5&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>如果出错了，检查系统是否安装了h5dy</p>
+<blockquote>
+<div><p>pip install h5py</p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model_loaded</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;cifar10.h5&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>将训练后的模型从文件加载到model_loaded中。</p>
+</div>
+<div class="section" id="执行结果">
+<h3>执行结果<a class="headerlink" href="#执行结果" title="永久链接至标题">¶</a></h3>
+<p>　与测试数据对比，检验结果。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+<span></span><span class="n">pred</span> <span class="o">=</span> <span class="n">model_loaded</span><span class="o">.</span><span class="n">predict_classes</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">test_label</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_label</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.6543
+</pre></div></div>
+</div>
+<p>正确率约为66％。下面是30个正确答案数据。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">correct_data</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="n">pred</span> <span class="o">==</span> <span class="n">test_label</span><span class="p">]</span>
+<span class="n">correct_label</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="n">pred</span> <span class="o">==</span> <span class="n">test_label</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">10</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label_names</span><span class="p">[</span><span class="n">correct_label</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">correct_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tensorflow-keras_34_0.png" src="_images/tensorflow-keras_34_0.png" />
+</div>
+</div>
+<p>不正确答案数据。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">incorrect_data</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="n">pred</span> <span class="o">!=</span> <span class="n">test_label</span><span class="p">]</span>
+<span class="n">incorrect_label</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="n">pred</span> <span class="o">!=</span> <span class="n">test_label</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">10</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="mi">10</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label_names</span><span class="p">[</span><span class="n">incorrect_label</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">incorrect_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tensorflow-keras_36_0.png" src="_images/tensorflow-keras_36_0.png" />
+</div>
+</div>
+<p>　使用TensorFlow，实装了深度学习中的图像识别。为了说明方便，采用了最简洁的实现，所需计算时间也很短，所以准确率仅为60％左右。实际上，未来获得更高的准确率，则必须网络结构和算法上下功夫，当然，所需的计算资源也随之加大。</p>
+<p>　可以在网上确认到精度最高的算法，截止到现在2018年10月，最高记录是2015年实现的96.53％的正确率。</p>
+</div>
+</div>
+<div class="section" id="总结">
+<h2>总结<a class="headerlink" href="#总结" title="永久链接至标题">¶</a></h2>
+<p>　通过Iris数据和图像数据的处理，了解了如何使用TensorFlow/Keras。</p>
+<p>　深度学习可以应用许多领域，图像识别是其中的一个典型领域，可以立即感受到深度学习的威力。</p>
+<p>　如何构建适合的模式，是实际可发运用中的一个最关键的问题，你可以从各种论文和书籍中获取信息。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="scikit-learn.html">scikit-learn</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="gensim.html">使用Gensim</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; 版权所有 2020, xu.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

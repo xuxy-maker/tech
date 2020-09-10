@@ -1,0 +1,827 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>使用Gensim &#8212; ml-libs  文档</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/translations.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "processClass": "math|output_area", "ignoreClass": "document"}})</script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="神经网络深度学习(TensorFlow/Keras)" href="tensorflow-keras.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>ml-libs  文档</span></a></h1>
+        <h2 class="heading"><span>使用Gensim</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="tensorflow-keras.html">神经网络深度学习(TensorFlow/Keras)</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="使用Gensim">
+<h1>使用Gensim<a class="headerlink" href="#使用Gensim" title="永久链接至标题">¶</a></h1>
+<p>　gemsim是一个主题模型Python工具库，能够从文档中有效地自动抽取语义主题。gensim中的算法包括：LSA(Latent Semantic Analysis), LDA(Latent Dirichlet Allocation), RP (Random Projections),word2vec 通过在一个训练文档语料库中，检查词汇统计联合出现模式, 可以用来发掘文档语义结构，这些算法属于非监督学习，可以处理原始的，非结构化的文本(plain text)。</p>
+<p>在此，使用LDA和word2vec进行实践。</p>
+<p><img alt="gensim" src="_images/news007_00.jpg" /></p>
+<div class="section" id="下载数据/预处理">
+<h2>下载数据/预处理<a class="headerlink" href="#下载数据/预处理" title="永久链接至标题">¶</a></h2>
+<div class="section" id="文本分类标准测试集reuters-21578">
+<h3>文本分类标准测试集reuters-21578<a class="headerlink" href="#文本分类标准测试集reuters-21578" title="永久链接至标题">¶</a></h3>
+<p>　<code class="docutils literal notranslate"><span class="pre">Reuters-21578</span></code>_ 是一个开放数据集，用于文本分类研究的测试集合。是路透社过去有关金融新闻的文章集。</p>
+</div>
+<div class="section" id="什么是NLTK？">
+<h3>什么是NLTK？<a class="headerlink" href="#什么是NLTK？" title="永久链接至标题">¶</a></h3>
+<p>　NLTK（Python自然语言工具包）用于诸如标记化、词形还原、词干化、解析、POS标注等任务。该库具有几乎所有NLP任务的工具。</p>
+</div>
+<div class="section" id="利用NLTK下载">
+<h3>利用NLTK下载<a class="headerlink" href="#利用NLTK下载" title="永久链接至标题">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">gensim</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;reuters&quot;</span><span class="p">)</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;stopwords&quot;</span><span class="p">)</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;punkt&quot;</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+[nltk_data] Downloading package reuters to /root/nltk_data...
+[nltk_data]   Package reuters is already up-to-date!
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>　有连续三个nltk.download，nltk.download(reuters)是Reuters-21578数据。另外两个nltk.downloads下载数据供以后使用。将下载的文件保存在适当的本地目录中。</p>
+</div>
+<div class="section" id="读取数据并存于变量中">
+<h3>读取数据并存于变量中<a class="headerlink" href="#读取数据并存于变量中" title="永久链接至标题">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">reuters</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">reuters</span>
+<span class="n">paras</span> <span class="o">=</span> <span class="n">reuters</span><span class="o">.</span><span class="n">paras</span><span class="p">()</span>
+
+
+</pre></div>
+</div>
+</div>
+<p>　从文件中读取Reuters-21578数据，存于reuters中。</p>
+<p>　reuters中有各种信息的对象，新闻记事的文本信息通过paras方法获取。 paras[i]中的第i条指向一个句子，每条是一个句子的列表，每句是单词列表。</p>
+<p>　看一下第一篇文章中第一句话的20个单词。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">paras</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="mi">20</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;ASIAN&#39;,
+ &#39;EXPORTERS&#39;,
+ &#39;FEAR&#39;,
+ &#39;DAMAGE&#39;,
+ &#39;FROM&#39;,
+ &#39;U&#39;,
+ &#39;.&#39;,
+ &#39;S&#39;,
+ &#39;.-&#39;,
+ &#39;JAPAN&#39;,
+ &#39;RIFT&#39;,
+ &#39;Mounting&#39;,
+ &#39;trade&#39;,
+ &#39;friction&#39;,
+ &#39;between&#39;,
+ &#39;the&#39;,
+ &#39;U&#39;,
+ &#39;.&#39;,
+ &#39;S&#39;,
+ &#39;.&#39;]
+</pre></div></div>
+</div>
+<p>　在Gensim中使用「bag of words」“词袋”形式的文档。所谓的单词袋形式是一种忽略单词的排列方式的数据格式，只保留有关文档中每个单词出现次数的信息。</p>
+</div>
+<div class="section" id="去除停用词">
+<h3>去除停用词<a class="headerlink" href="#去除停用词" title="永久链接至标题">¶</a></h3>
+<p>　有一点需要注意。通常在自然语言处理中，去除停用词是预处理工作。停用词是指，经常使用但实际上不影响句子解释的词。如在英语中的冠词和介词等。这些是是人们阅读英语句子时的重要信息，但在不考虑单词顺序单词袋中，就变成了无用的信息。</p>
+<p>　看一下NLTK中的英语停用词。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">stop_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s2">&quot;english&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>下面是英文字母顺序的前十个停用词。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">sorted</span><span class="p">(</span><span class="n">stop_words</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;a&#39;, &#39;about&#39;, &#39;above&#39;, &#39;after&#39;, &#39;again&#39;, &#39;against&#39;, &#39;ain&#39;, &#39;all&#39;, &#39;am&#39;, &#39;an&#39;]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="将数据转换为“词序列”">
+<h3>将数据转换为“词序列”<a class="headerlink" href="#将数据转换为“词序列”" title="永久链接至标题">¶</a></h3>
+<p>把文档数据转换为“字符串双重列表”。换句话说，就是把每篇文章原有“段落”结构，转换为单纯的“单词序列”。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">reuters_texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paras</span><span class="p">]</span>
+<span class="n">reuters_texts_filtered</span> <span class="o">=</span> <span class="p">[[</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">p</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">reuters_texts</span><span class="p">]</span>
+
+
+</pre></div>
+</div>
+</div>
+<p>　reuters_texts变量存放结果，而去除了停用词和单一字母单词的结果存于reuters_texts_filtered中，</p>
+</div>
+<div class="section" id="转换为Corpus(语料库)格式">
+<h3>转换为Corpus(语料库)格式<a class="headerlink" href="#转换为Corpus(语料库)格式" title="永久链接至标题">¶</a></h3>
+<p>　转换为Gensim中使用的“语料库”格式。语料库是自然语言处理中经常使用的术语，通常定义为易于进行文章的构造化结构。Gensim中是语料库的单袋格式。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dictionary</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">corpora</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">reuters_texts_filtered</span><span class="p">))</span>
+<span class="n">reuters_corpus</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span><span class="o">.</span><span class="n">doc2bow</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">reuters_texts_filtered</span><span class="p">]</span>
+
+</pre></div>
+</div>
+</div>
+<p>　gensim.corpora.Dictionary是对每个单词的数值定义的类型。该类型能够进行单词和数字的双向转换。第二行是利用它制作一套单词格式的语料库。显示reuters_corpus中第一个文档的10个单词。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">reuters_corpus</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(0, 1),
+ (1, 6),
+ (2, 1),
+ (3, 1),
+ (4, 2),
+ (5, 1),
+ (6, 1),
+ (7, 1),
+ (8, 1),
+ (9, 1)]
+</pre></div></div>
+</div>
+<p>（0，1），（1，6）表示指第0个单词出现1次，第1个单词出现6次。</p>
+<p>到此为止是预处理部分，下面使用机器学习进行分析。</p>
+</div>
+</div>
+<div class="section" id="使用LDA计算主题模型">
+<h2>使用LDA计算主题模型<a class="headerlink" href="#使用LDA计算主题模型" title="永久链接至标题">¶</a></h2>
+<div class="section" id="什么是LDA">
+<h3>什么是LDA<a class="headerlink" href="#什么是LDA" title="永久链接至标题">¶</a></h3>
+<p>　LDA是“主题模型”的手法之一。主题模型是指推测文档主题的模型，用于文档分类和搜索。 LDA通过“概率分布”预测每个文档的主题。</p>
+<p>　如，假设新闻网站包含三个主题的要素：“政治”，“经济”和“体育”。LDA分析得到的是三项要素的加权值。如果将其标准化总和为 1，则可以将LDA视为这三个主题的概率分布。</p>
+<p>　下图显示的是计算结果。</p>
+<p><img alt="ss" src="_images/news007_1.jpg" /></p>
+<p>在LDA中，从指定主题的数量。然后得到“有哪些主题”，并计算每个文档的主题分布。</p>
+</div>
+<div class="section" id="LDA训练">
+<h3>LDA训练<a class="headerlink" href="#LDA训练" title="永久链接至标题">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dictionary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">model</span><span class="o">=</span><span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ldamodel</span><span class="o">.</span><span class="n">LdaModel</span><span class="p">(</span><span class="n">reuters_corpus</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">id2word</span><span class="o">=</span><span class="n">dictionary</span><span class="o">.</span><span class="n">id2token</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+</div>
+<p>　dictionary[0]是函数dictionary.id2token所需的手续。在第二行中，建立模型并训练。参数num_topics是主题数，参数id2word是数字/单词的转换函数。之后的可视化中需要。 Random_state是随机数种子，用于多次执行提高结果的再现度。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">print_topics</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(0,
+  &#39;0.052*&#34;bank&#34; + 0.037*&#34;mln&#34; + 0.034*&#34;stg&#34; + 0.023*&#34;said&#34; + 0.018*&#34;the&#34; + 0.015*&#34;market&#34; + 0.013*&#34;pct&#34; + 0.011*&#34;money&#34; + 0.011*&#34;billion&#34; + 0.011*&#34;dlrs&#34;&#39;),
+ (1,
+  &#39;0.032*&#34;pct&#34; + 0.025*&#34;said&#34; + 0.024*&#34;billion&#34; + 0.016*&#34;the&#34; + 0.013*&#34;year&#34; + 0.010*&#34;bank&#34; + 0.007*&#34;government&#34; + 0.007*&#34;trade&#34; + 0.007*&#34;foreign&#34; + 0.007*&#34;last&#34;&#39;),
+ (2,
+  &#39;0.028*&#34;lt&#34; + 0.023*&#34;said&#34; + 0.017*&#34;inc&#34; + 0.017*&#34;corp&#34; + 0.015*&#34;dlrs&#34; + 0.015*&#34;mln&#34; + 0.012*&#34;unit&#34; + 0.012*&#34;co&#34; + 0.009*&#34;company&#34; + 0.008*&#34;division&#34;&#39;),
+ (3,
+  &#39;0.044*&#34;said&#34; + 0.028*&#34;company&#34; + 0.020*&#34;dlrs&#34; + 0.013*&#34;lt&#34; + 0.012*&#34;share&#34; + 0.011*&#34;the&#34; + 0.010*&#34;inc&#34; + 0.008*&#34;offer&#34; + 0.008*&#34;would&#34; + 0.007*&#34;mln&#34;&#39;),
+ (4,
+  &#39;0.046*&#34;january&#34; + 0.044*&#34;billion&#34; + 0.041*&#34;february&#34; + 0.032*&#34;dlrs&#34; + 0.031*&#34;pct&#34; + 0.027*&#34;mln&#34; + 0.023*&#34;year&#34; + 0.021*&#34;rose&#34; + 0.017*&#34;1986&#34; + 0.016*&#34;december&#34;&#39;),
+ (5,
+  &#39;0.024*&#34;said&#34; + 0.017*&#34;dlrs&#34; + 0.014*&#34;the&#34; + 0.014*&#34;year&#34; + 0.011*&#34;mln&#34; + 0.008*&#34;pct&#34; + 0.008*&#34;bank&#34; + 0.007*&#34;banks&#34; + 0.006*&#34;company&#34; + 0.006*&#34;week&#34;&#39;),
+ (6,
+  &#39;0.063*&#34;cts&#34; + 0.035*&#34;april&#34; + 0.033*&#34;record&#34; + 0.032*&#34;lt&#34; + 0.027*&#34;div&#34; + 0.024*&#34;vs&#34; + 0.024*&#34;qtly&#34; + 0.023*&#34;pay&#34; + 0.023*&#34;prior&#34; + 0.021*&#34;march&#34;&#39;),
+ (7,
+  &#39;0.027*&#34;said&#34; + 0.024*&#34;dollar&#34; + 0.012*&#34;yen&#34; + 0.011*&#34;rates&#34; + 0.011*&#34;exchange&#34; + 0.011*&#34;currency&#34; + 0.011*&#34;paris&#34; + 0.010*&#34;the&#34; + 0.009*&#34;baker&#34; + 0.009*&#34;,&#34;&#34;&#39;),
+ (8,
+  &#39;0.052*&#34;pct&#34; + 0.033*&#34;shares&#34; + 0.033*&#34;said&#34; + 0.017*&#34;stake&#34; + 0.017*&#34;lt&#34; + 0.016*&#34;offer&#34; + 0.016*&#34;group&#34; + 0.010*&#34;the&#34; + 0.010*&#34;common&#34; + 0.009*&#34;stock&#34;&#39;),
+ (9,
+  &#39;0.037*&#34;said&#34; + 0.016*&#34;oil&#34; + 0.014*&#34;the&#34; + 0.010*&#34;,&#34;&#34; + 0.009*&#34;prices&#34; + 0.008*&#34;pct&#34; + 0.007*&#34;would&#34; + 0.007*&#34;year&#34; + 0.006*&#34;price&#34; + 0.005*&#34;market&#34;&#39;),
+ (10,
+  &#39;0.031*&#34;mln&#34; + 0.027*&#34;said&#34; + 0.024*&#34;tonnes&#34; + 0.022*&#34;000&#34; + 0.015*&#34;the&#34; + 0.013*&#34;year&#34; + 0.011*&#34;1986&#34; + 0.009*&#34;wheat&#34; + 0.009*&#34;dlrs&#34; + 0.007*&#34;production&#34;&#39;),
+ (11,
+  &#39;0.031*&#34;said&#34; + 0.017*&#34;lt&#34; + 0.010*&#34;the&#34; + 0.010*&#34;stock&#34; + 0.009*&#34;delegates&#34; + 0.008*&#34;buffer&#34; + 0.008*&#34;cocoa&#34; + 0.007*&#34;gulf&#34; + 0.006*&#34;ltd&#34; + 0.005*&#34;would&#34;&#39;),
+ (12,
+  &#39;0.032*&#34;said&#34; + 0.010*&#34;coffee&#34; + 0.009*&#34;the&#34; + 0.008*&#34;would&#34; + 0.007*&#34;year&#34; + 0.006*&#34;trade&#34; + 0.006*&#34;,&#34;&#34; + 0.006*&#34;brazil&#34; + 0.006*&#34;china&#34; + 0.006*&#34;export&#34;&#39;),
+ (13,
+  &#39;0.029*&#34;said&#34; + 0.021*&#34;trade&#34; + 0.017*&#34;the&#34; + 0.016*&#34;would&#34; + 0.008*&#34;agreement&#34; + 0.007*&#34;japan&#34; + 0.007*&#34;ec&#34; + 0.007*&#34;,&#34;&#34; + 0.006*&#34;bill&#34; + 0.006*&#34;.&#34;&#34;&#39;),
+ (14,
+  &#39;0.030*&#34;dlrs&#34; + 0.029*&#34;said&#34; + 0.020*&#34;lt&#34; + 0.015*&#34;pct&#34; + 0.011*&#34;the&#34; + 0.011*&#34;corp&#34; + 0.009*&#34;cyclops&#34; + 0.009*&#34;usair&#34; + 0.008*&#34;federal&#34; + 0.008*&#34;company&#34;&#39;),
+ (15,
+  &#39;0.034*&#34;said&#34; + 0.032*&#34;lt&#34; + 0.026*&#34;mln&#34; + 0.018*&#34;stock&#34; + 0.017*&#34;dlrs&#34; + 0.015*&#34;company&#34; + 0.015*&#34;inc&#34; + 0.013*&#34;the&#34; + 0.010*&#34;shares&#34; + 0.010*&#34;corp&#34;&#39;),
+ (16,
+  &#39;0.019*&#34;said&#34; + 0.011*&#34;canada&#34; + 0.009*&#34;trade&#34; + 0.009*&#34;the&#34; + 0.008*&#34;would&#34; + 0.008*&#34;canadian&#34; + 0.007*&#34;chrysler&#34; + 0.005*&#34;lawson&#34; + 0.005*&#34;government&#34; + 0.005*&#34;,&#34;&#34;&#39;),
+ (17,
+  &#39;0.014*&#34;),&#34; + 0.012*&#34;plant&#34; + 0.010*&#34;said&#34; + 0.009*&#34;to&#34; + 0.008*&#34;saudi&#34; + 0.008*&#34;aluminium&#34; + 0.007*&#34;bolivia&#34; + 0.007*&#34;the&#34; + 0.007*&#34;nil&#34; + 0.007*&#34;corn&#34;&#39;),
+ (18,
+  &#39;0.088*&#34;vs&#34; + 0.070*&#34;mln&#34; + 0.048*&#34;000&#34; + 0.042*&#34;net&#34; + 0.041*&#34;cts&#34; + 0.035*&#34;loss&#34; + 0.029*&#34;dlrs&#34; + 0.026*&#34;shr&#34; + 0.020*&#34;profit&#34; + 0.016*&#34;qtr&#34;&#39;),
+ (19,
+  &#39;0.020*&#34;said&#34; + 0.012*&#34;the&#34; + 0.009*&#34;port&#34; + 0.009*&#34;shipping&#34; + 0.008*&#34;iran&#34; + 0.008*&#34;gulf&#34; + 0.007*&#34;soviet&#34; + 0.007*&#34;ship&#34; + 0.007*&#34;unemployment&#34; + 0.006*&#34;ships&#34;&#39;)]
+</pre></div></div>
+</div>
+<p>　对于每个主题，以单词和权重的最高顺序排列。第0个主题中bank和million权重高，可以视为是银行相关的主题。第三个主题中公司，dlrs，股票的权重高，可以看作是有关公司股价的主题。</p>
+</div>
+<div class="section" id="推测主题">
+<h3>推测主题<a class="headerlink" href="#推测主题" title="永久链接至标题">¶</a></h3>
+<p>　使用和训练相同的数据，推测文档主题。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pred</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="n">reuters_corpus</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">/=</span> <span class="n">pred</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+</div>
+<p>　第一行是计算预测值。第二行对结果正规化。</p>
+<p>　用条形图可视化前5个文档的主题分布。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gensim_27_0.png" src="_images/gensim_27_0.png" />
+</div>
+</div>
+<p>　第一个是文档中信息最强烈的主题</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+13
+</pre></div></div>
+</div>
+<p>　从上面的主题构成词列表中查找第13个主题，会发现诸如“交易”和“协议”之类的权重很高。推测，与国际贸易协定有关。让我们看一下文档（仅显示前300个字符）。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fileids</span> <span class="o">=</span> <span class="n">reuters</span><span class="o">.</span><span class="n">fileids</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">reuters</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="n">fileids</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="mi">300</span><span class="p">])</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ASIAN EXPORTERS FEAR DAMAGE FROM U.S.-JAPAN RIFT
+  Mounting trade friction between the
+  U.S. And Japan has raised fears among many of Asia&#39;s exporting
+  nations that the row could inflict far-reaching economic
+  damage, businessmen and officials said.
+      They told Reuter correspondents in Asian
+</pre></div></div>
+</div>
+<p>　这是关于日美贸易摩擦的新闻。事实证明，LDA判决是合理的。</p>
+</div>
+</div>
+<div class="section" id="Word2vec词嵌入">
+<h2>Word2vec词嵌入<a class="headerlink" href="#Word2vec词嵌入" title="永久链接至标题">¶</a></h2>
+<div class="section" id="下载Quora数据集">
+<h3>下载Quora数据集<a class="headerlink" href="#下载Quora数据集" title="永久链接至标题">¶</a></h3>
+<p>　下载数据“quora_duplicate_questions.tsv”, 将其放在目录“data”中。 以其中的“question1”为列。它收集了大约40万个英语问题。 读取数据，分解为单词，显示前10个句子的内容。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="n">quora</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/quora_duplicate_questions.tsv&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="n">quora</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nltk</span><span class="o">.</span><span class="n">tokenize</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">quora</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[&#39;what&#39;, &#39;is&#39;, &#39;the&#39;, &#39;step&#39;, &#39;by&#39;, &#39;step&#39;, &#39;guide&#39;, &#39;to&#39;, &#39;invest&#39;, &#39;in&#39;, &#39;share&#39;, &#39;market&#39;, &#39;in&#39;, &#39;india&#39;, &#39;?&#39;], [&#39;what&#39;, &#39;is&#39;, &#39;the&#39;, &#39;story&#39;, &#39;of&#39;, &#39;kohinoor&#39;, &#39;(&#39;, &#39;koh-i-noor&#39;, &#39;)&#39;, &#39;diamond&#39;, &#39;?&#39;], [&#39;how&#39;, &#39;can&#39;, &#39;i&#39;, &#39;increase&#39;, &#39;the&#39;, &#39;speed&#39;, &#39;of&#39;, &#39;my&#39;, &#39;internet&#39;, &#39;connection&#39;, &#39;while&#39;, &#39;using&#39;, &#39;a&#39;, &#39;vpn&#39;, &#39;?&#39;], [&#39;why&#39;, &#39;am&#39;, &#39;i&#39;, &#39;mentally&#39;, &#39;very&#39;, &#39;lonely&#39;, &#39;?&#39;, &#39;how&#39;, &#39;can&#39;, &#39;i&#39;, &#39;solve&#39;, &#39;it&#39;, &#39;?&#39;], [&#39;which&#39;, &#39;one&#39;, &#39;dissolve&#39;, &#39;in&#39;, &#39;water&#39;, &#39;quikly&#39;, &#39;sugar&#39;, &#39;,&#39;, &#39;salt&#39;, &#39;,&#39;, &#39;methane&#39;, &#39;and&#39;, &#39;carbon&#39;, &#39;di&#39;, &#39;oxide&#39;, &#39;?&#39;], [&#39;astrology&#39;, &#39;:&#39;, &#39;i&#39;, &#39;am&#39;, &#39;a&#39;, &#39;capricorn&#39;, &#39;sun&#39;, &#39;cap&#39;, &#39;moon&#39;, &#39;and&#39;, &#39;cap&#39;, &#39;rising&#39;, &#39;...&#39;, &#39;what&#39;, &#39;does&#39;, &#39;that&#39;, &#39;say&#39;, &#39;about&#39;, &#39;me&#39;, &#39;?&#39;], [&#39;should&#39;, &#39;i&#39;, &#39;buy&#39;, &#39;tiago&#39;, &#39;?&#39;], [&#39;how&#39;, &#39;can&#39;, &#39;i&#39;, &#39;be&#39;, &#39;a&#39;, &#39;good&#39;, &#39;geologist&#39;, &#39;?&#39;], [&#39;when&#39;, &#39;do&#39;, &#39;you&#39;, &#39;use&#39;, &#39;シ&#39;, &#39;instead&#39;, &#39;of&#39;, &#39;し&#39;, &#39;?&#39;], [&#39;motorola&#39;, &#39;(&#39;, &#39;company&#39;, &#39;)&#39;, &#39;:&#39;, &#39;can&#39;, &#39;i&#39;, &#39;hack&#39;, &#39;my&#39;, &#39;charter&#39;, &#39;motorolla&#39;, &#39;dcx3400&#39;, &#39;?&#39;]]
+</pre></div></div>
+</div>
+<p>　去除停用词，显示前10个句子。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">quora_filtered</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">quora</span><span class="p">:</span>
+    <span class="n">quora_filtered</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">sentence</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">quora_filtered</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[&#39;step&#39;, &#39;step&#39;, &#39;guide&#39;, &#39;invest&#39;, &#39;share&#39;, &#39;market&#39;, &#39;india&#39;], [&#39;story&#39;, &#39;kohinoor&#39;, &#39;koh-i-noor&#39;, &#39;diamond&#39;], [&#39;increase&#39;, &#39;speed&#39;, &#39;internet&#39;, &#39;connection&#39;, &#39;using&#39;, &#39;vpn&#39;], [&#39;mentally&#39;, &#39;lonely&#39;, &#39;solve&#39;], [&#39;one&#39;, &#39;dissolve&#39;, &#39;water&#39;, &#39;quikly&#39;, &#39;sugar&#39;, &#39;salt&#39;, &#39;methane&#39;, &#39;carbon&#39;, &#39;di&#39;, &#39;oxide&#39;], [&#39;astrology&#39;, &#39;capricorn&#39;, &#39;sun&#39;, &#39;cap&#39;, &#39;moon&#39;, &#39;cap&#39;, &#39;rising&#39;, &#39;...&#39;, &#39;say&#39;], [&#39;buy&#39;, &#39;tiago&#39;], [&#39;good&#39;, &#39;geologist&#39;], [&#39;use&#39;, &#39;instead&#39;], [&#39;motorola&#39;, &#39;company&#39;, &#39;hack&#39;, &#39;charter&#39;, &#39;motorolla&#39;, &#39;dcx3400&#39;]]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="什么是Word2vec">
+<h3>什么是Word2vec<a class="headerlink" href="#什么是Word2vec" title="永久链接至标题">¶</a></h3>
+<p>词嵌入(Word Embedding)：</p>
+<p>就是将「不可计算」「非结构化」的词转化为「可计算」「结构化」的向量,这一步解决的是”将现实问题转化为数学问题“ Word2vec是词嵌入方式之一，属于NLP领域。将词转化为「可计算」「结构化」的向量的过程。</p>
+<p>　Word2vec是一种将词嵌入到指定维度空间中的算法，空间中单词之间距离的接近度就是单词含义的接近度。</p>
+</div>
+<div class="section" id="使用Word2vec训练">
+<h3>使用Word2vec训练<a class="headerlink" href="#使用Word2vec训练" title="永久链接至标题">¶</a></h3>
+<p>　与LDA不同，仅需要单词列表，而不需要语料库数据。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Word2Vec</span><span class="p">(</span><span class="n">quora_filtered</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<p>　此处指定的“size”是嵌入维度空间的尺寸，“窗口”是连接单词数。</p>
+</div>
+<div class="section" id="使用Word2vec推测">
+<h3>使用Word2vec推测<a class="headerlink" href="#使用Word2vec推测" title="永久链接至标题">¶</a></h3>
+<p>　看一下训练后的模型中的与“生病”和“演员”两个词相近的词。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">similar_by_word</span><span class="p">(</span><span class="s2">&quot;sick&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/root/anaconda3/envs/ml-dev/lib/python3.5/site-packages/gensim/matutils.py:737: FutureWarning: Conversion of the second argument of issubdtype from `int` to `np.signedinteger` is deprecated. In future, it will be treated as `np.int64 == np.dtype(int).type`.
+  if np.issubdtype(vec.dtype, np.int):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(&#39;angry&#39;, 0.8846410512924194),
+ (&#39;hungry&#39;, 0.8809215426445007),
+ (&#39;pierced&#39;, 0.8643348217010498),
+ (&#39;uncomfortable&#39;, 0.8594077229499817),
+ (&#39;dizzy&#39;, 0.8556342720985413),
+ (&#39;drunk&#39;, 0.8525719046592712),
+ (&#39;depressed&#39;, 0.8452755212783813),
+ (&#39;jealous&#39;, 0.8409408330917358),
+ (&#39;aroused&#39;, 0.8362992405891418),
+ (&#39;horny&#39;, 0.8306034803390503)]
+</pre></div></div>
+</div>
+<p>　单词从上到下按顺序排列。可以结果是合理的。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">similar_by_vector</span><span class="p">(</span><span class="s2">&quot;actor&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(&#39;actress&#39;, 0.92546546459198),
+ (&#39;singer&#39;, 0.8973912596702576),
+ (&#39;bollywood&#39;, 0.8659350872039795),
+ (&#39;actors&#39;, 0.8614586591720581),
+ (&#39;superhero&#39;, 0.8529343008995056),
+ (&#39;actor/actress&#39;, 0.8393876552581787),
+ (&#39;comedy&#39;, 0.8310166597366333),
+ (&#39;portrayed&#39;, 0.8223127126693726),
+ (&#39;actresses&#39;, 0.8207921385765076),
+ (&#39;hollywood&#39;, 0.81743323802948)]
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="总结">
+<h2>总结<a class="headerlink" href="#总结" title="永久链接至标题">¶</a></h2>
+<p>　演示Gensim的典型用法，LDA和Word2vec。这些可以用来和主题模型的类似的领域比如文档检索。 　处理的是英文数据，在中文，日文中处理时，还需要构词分割等工具。比较知名的有MeCab、Juman、Sudachi等。</p>
+</div>
+<div class="section" id="结束语">
+<h2>结束语<a class="headerlink" href="#结束语" title="永久链接至标题">¶</a></h2>
+<p>　广泛而浅显介绍了机器学习中使用各种工具库，在库的选择上，是基于作者本身的经验，可能有所偏颇。希望读者通过学习，对Python机器学习中各种工具库的使用有一个宏观明确的认识。</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="tensorflow-keras.html">神经网络深度学习(TensorFlow/Keras)</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; 版权所有 2020, xu.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

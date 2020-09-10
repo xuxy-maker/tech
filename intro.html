@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>前言 &#8212; ml-libs  文档</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/translations.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "processClass": "math|output_area", "ignoreClass": "document"}})</script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="Jupyter Notebook" href="jupyter.html" />
+    <link rel="prev" title="Python机器学习" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>ml-libs  文档</span></a></h1>
+        <h2 class="heading"><span>前言</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Python机器学习</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jupyter.html">Jupyter Notebook</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="前言">
+<h1>前言<a class="headerlink" href="#前言" title="永久链接至标题">¶</a></h1>
+<p>　很长时间，没写点什么了。</p>
+<p>　计算机这个行当，所有人都要不同程度上学习新知识。学习可说是开发人员必备的一个技能。说教谁有点过分了。比如在机器学习、人工智能方面，直接从事开发的人不多。有一定程序开发经验的人，如何着手，是个问题。能很独立写程序的人，都有一个习惯，问题点在哪？可能在哪几个地方花时间，对难的东西比较敏感。对机器学习来说，毫无疑问，各种算法，是难中之难。如果从这里下手，恐怕是要撞墙。前两天，不是很甘心，和学精算师的儿子，借了本概率的书，给我来了句，“这东西简单”。他是不知道他老子，算2+3都想用以下计算器。做工程的，架构师也好，SE也罢。会用就是好的了。alphago赢了人类，人工智能有这么大的突破，正把理论带到今天的发展，做出贡献的不过寥寥数人，还都是数学方面的人才。</p>
+<p>　说了这么多闲话，学习比较捷径就是先动起来。熟悉了之后，在应用层面上下功夫。所以，在选择上，也是能够理论和实践能同时进行的这种系列。</p>
+<p>　感谢加藤公一先生，原稿做得很精细。基本上没需要什么确认，程序都能运行。这里想提一下。国人也常在网上发表类似的文稿，有时，看着想法不错拿来试试，难得能跑起来，改到后来，说不清是谁写的程序了。想起了一条业界规则“用90%的时间用做10%的工作”，养成一个良好的工作习惯，能让我们的工作生活更轻松。</p>
+<p>　近来的一点所感，觉得java、c++这种原来的强势语种的优势还有多少？比如在CMS方面，PHP做得很成熟，
+机器学习上，前端几乎是Python的天下。</p>
+</div>
+<div class="section" id="深度学习中的常用工具">
+<h1>深度学习中的常用工具<a class="headerlink" href="#深度学习中的常用工具" title="永久链接至标题">¶</a></h1>
+<hr class="docutils" />
+<p>　Python广泛用于机器学习领域, 在此介绍Python机器学习中常用的工具库。</p>
+<ul class="simple">
+<li><p>数值计算工具Numpy/Scipy</p></li>
+<li><p>绘图工具Matplotlib</p></li>
+<li><p>Web在线编辑调试工具Jupyter Notebook</p></li>
+<li><p>大规模数据高速处理pangda</p></li>
+<li><p>标准机器学习算法工具Scikit-learn</p></li>
+<li><p>主题模型的自然语言处理库Gensim</p></li>
+<li><p>深度学习引擎库TensorFlow</p></li>
+</ul>
+<p>概要说明上述个工具库。这是个人工作中常用的工具库，可能有所偏颇。</p>
+<div class="section" id="##-数值计算的基础工具Numpy/Scipy">
+<h2>## 数值计算的基础工具Numpy/Scipy<a class="headerlink" href="###-数值计算的基础工具Numpy/Scipy" title="永久链接至标题">¶</a></h2>
+<p><img alt="SciPy" src="_images/news023_1.jpg" /></p>
+<p>　Numpy/Scipy是数值计算的基底库，在Scikit-learn、TensorFlow也是使用Numpy/Scipy来开发实现的。Numpy提供的数组、向量矩阵计算尤为重要，此外，它还提供了数值计算的各种基底函数，例如线性代数和数学函数等。</p>
+<p>　SipScipy提供了在科学计算中，集成度比Numpy更高的一些功能。包括稀疏矩阵，积分，内插，统计处理，傅立叶变换，信号处理和数值优化等。 Numpy和Scipy是分别独立的库，但在科学计算中经常同时使用，大多数与机器学习相关的库都依赖于两者。此后，将在不考虑Numpy、Scipy的详细区划。 当使用既存的库（如Scikit-learn）执行机器学习时，Numpy、Scipy的使用并非一定必须，但在一些数据处理中会用到，需要一定程度的掌握。</p>
+</div>
+<div class="section" id="##-Matplotlib：用于绘制散点图，图形，直方图等">
+<h2>## Matplotlib：用于绘制散点图，图形，直方图等<a class="headerlink" href="###-Matplotlib：用于绘制散点图，图形，直方图等" title="永久链接至标题">¶</a></h2>
+<p><img alt="matplotlib" src="_images/news023_2.jpg" /></p>
+<p>　Matplotlib是一个绘制图形库。有绘制散点图，折线图，条形图，直方图，饼图等功能。还可以绘制三维图，以及向图表添加各种视觉效果等。</p>
+<p>　Matplotlib官方网上，有直观的视觉体验。 绘制图表与机器学习本身并不直接相关，但直观提示这一点，在抽象的数据分析中，也同样重要。所以，作为绘图手段的Matplotlib也需要学习。</p>
+</div>
+<div class="section" id="##-Jupyter-Notebook：通过Web界面编辑的同时执行">
+<h2>## Jupyter Notebook：通过Web界面编辑的同时执行<a class="headerlink" href="###-Jupyter-Notebook：通过Web界面编辑的同时执行" title="永久链接至标题">¶</a></h2>
+<p><img alt="jupyter" src="_images/news023_3.jpg" /></p>
+<p>　「Jupyter Notebook」是一个可视化的开发环境。曾经被称为「IPython Notebook」，现在也支持Python以外的开发语言，更名至此。</p>
+<p>　通过Web浏览器访问服务器被启动执行。通过浏览器执行Python代码，提供直观视觉的界面，能够交互式地确认代码。可以保存调试结果并重复使用。还可以插入以Markdown格式为首的各类格式的文档，适用于文档和代码混合的演稿。</p>
+</div>
+<div class="section" id="##-Pandas：大规模数据高速处理">
+<h2>## Pandas：大规模数据高速处理<a class="headerlink" href="###-Pandas：大规模数据高速处理" title="永久链接至标题">¶</a></h2>
+<p><img alt="pandas" src="_images/news023_4.jpg" /></p>
+<p>Pandas是大规模数据处理用库。在机器学习的主要用在数据的预处理。</p>
+<p>可以高速得读取一些典型的数据格式和后续数据加工处理。 Pandas的基本数据类型有Series和DataFrame， 分别对应于一维数组和二维数组，两者都可通过索引快速访问。另外，DataFrame可以像SQL一样进行处理，通过使用Group-by引擎和聚合函数提高处理速度。</p>
+</div>
+<div class="section" id="##-Scikit-learn：Python标准版的机器学习库">
+<h2>## Scikit-learn：Python标准版的机器学习库<a class="headerlink" href="###-Scikit-learn：Python标准版的机器学习库" title="永久链接至标题">¶</a></h2>
+<p><img alt="scikit-learn" src="_images/news023_5.jpg" /></p>
+<p>　Scikit-learn是一个标准的Python机器学习库，实现了主要的机器学习算法。还提供了用于各种任务（例如分类，回归和聚类）的算法，以及用于评估的便捷工具，如超参数网格搜索和交叉验证等。</p>
+<p>　另外，Scikit-learn提供了一致性的接口。简化了在更改算法时的编程工作。该一致性接口也被其它类似的库所模仿。 Scikit-learn的文档中不仅有如何使用API的说明，还有机器学习算法机制的解说，可以作为机器学习的补充教材。</p>
+</div>
+<div class="section" id="##-主题模型自然语言处理库Gensim">
+<h2>## 主题模型自然语言处理库Gensim<a class="headerlink" href="###-主题模型自然语言处理库Gensim" title="永久链接至标题">¶</a></h2>
+<p><img alt="gemsim" src="_images/news023_6.jpg" /></p>
+<p>　Gensim是自然语言处理库。提供文本处理工具，有TF-IDF（术语频率-反文档频率）、LSA（潜在语义分析）、LDA（线性判别分析）、word2vec等典型算法。</p>
+</div>
+<div class="section" id="##-深度学习引擎库TensorFlow">
+<h2>## 深度学习引擎库TensorFlow<a class="headerlink" href="###-深度学习引擎库TensorFlow" title="永久链接至标题">¶</a></h2>
+<p><img alt="tensorflow" src="_images/news023_7.jpg" /></p>
+<p>　TensorFlow是Google开发的神经网络深度学习引擎。</p>
+<p>　　使用TensorFlow进行定义流程，然后执行计算。可以选择在运行时在CPU或GPU上运行。之所以快速，是因为其在预先编译了网络结构之后才稼动。</p>
+<p>　　Python的深度学习中还有其他各种库，所以选择TensorFlow。原因是它用途广泛且文档齐全，并带有示例。TensorFlow文档中的图像识别、word2vec点典型示例中，还有算法细节的说明。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Python机器学习</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">目录</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jupyter.html">Jupyter Notebook</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; 版权所有 2020, xu.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>
